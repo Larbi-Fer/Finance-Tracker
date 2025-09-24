@@ -8,9 +8,81 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  email     String   @unique
-  username  String?
-  password  String
-  isActive  Boolean  @default(false)
+  id       String  @id @default(cuid())
+  email    String  @unique
+  username String?
+  password String
+  isActive Boolean @default(false)
+
+  walltes Wallets[]
+  categories Categories[]
+  incomeSources IncomeSources[]
+}
+
+model Wallets {
+  id   String @id @default(cuid())
+  name String
+
+  currencyId      String
+  userId          String
+  incomeBalance    Int    @default(0)
+  expensesBalance Int    @default(0)
+
+  currnecy Currencies @relation(fields: [currencyId], references: [id])
+  user     User       @relation(fields: [userId], references: [id])
+  expenses Expenses[]
+  incomes  Incomes[]
+}
+
+model Currencies {
+  id     String @id @default(cuid())
+  name   String
+  format String
+
+  wallets Wallets[]
+}
+
+model Categories {
+  id     String @id @default(cuid())
+  title  String
+  amount Int
+  userId String
+
+  expenses Expenses[]
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Expenses {
+  id         String   @id @default(cuid())
+  title      String
+  amount     Int      @default(0)
+  date       DateTime
+  categoryId String?
+  walletId   String?
+
+  category Categories? @relation(fields: [categoryId], references: [id])
+  wallet   Wallets?    @relation(fields: [walletId], references: [id])
+}
+
+model IncomeSources {
+  id    String @id @default(cuid())
+  title String
+  userId String
+
+  incomes Incomes[]
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("income_sources")
+}
+
+model Incomes {
+  id       String   @id @default(cuid())
+  title    String?
+  amount   Int      @default(0)
+  date     DateTime
+  sourceId String
+  walletId String
+
+  source IncomeSources @relation(fields: [sourceId], references: [id])
+  wallet Wallets?      @relation(fields: [walletId], references: [id])
 }
