@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
@@ -43,10 +43,33 @@ export class HomeService {
       },
     });
 
-    if (!data) return {message: 'WRONG_ID'}
+    if (!data) throw new NotFoundException('', {description: 'Invalide user id'})
 
-    const totalBalance = data.walltes.reduce((acc, wallet) => acc + wallet.incomeBalance - wallet.expensesBalance, 0);
+    const now = new Date();
+    const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
 
-    return {...data, totalBalance};
+    const incomes = await this.prisma.incomes.groupBy({
+      by: ['walletId'],
+      _sum: {amount: true},
+      where: { wallet: {userId: id}, date: { gte: firstDayOfMonth } },
+    })
+    const expenses = await this.prisma.expenses.groupBy({
+      by: ['walletId'],
+      _sum: {amount: true},
+      where: { wallet: {userId: id}, date: { gte: firstDayOfMonth } },
+    })    
+
+    const totalBalance = data.walltes.reduce((acc, wallet) =>
+      ({totalIncomes: acc.totalIncomes + wallet.incomeBalance, totalExpenses: acc.totalExpenses + wallet.expensesBalance}),
+      {totalIncomes: 0, totalExpenses: 0}
+    );
+    
+    return data.walltes.map(wallet =>
+      ({
+        ...wallet,
+        monthIncomes: incomes.find(income => income.walletId == wallet.id)?._sum?.amount || 0,
+        monthExpenses: expenses.find(expense => expense.walletId == wallet.id)?._sum?.amount || 0,
+        totalBalance,
+      }));
   }
 }
