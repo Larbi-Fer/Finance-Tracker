@@ -59,17 +59,22 @@ export class HomeService {
       where: { wallet: {userId: id}, date: { gte: firstDayOfMonth } },
     })    
 
-    const totalBalance = data.walltes.reduce((acc, wallet) =>
-      ({totalIncomes: acc.totalIncomes + wallet.incomeBalance, totalExpenses: acc.totalExpenses + wallet.expensesBalance}),
-      {totalIncomes: 0, totalExpenses: 0}
-    );
+    const totalBalance = data.walltes.reduce((acc, wallet) => acc + wallet.incomeBalance - wallet.expensesBalance, 0);
+    const MonthBalance = {
+      totalIncomes: incomes.reduce((acc, i) => acc + i._sum.amount!, 0),
+      totalExpenses: expenses.reduce((acc, i) => acc + i._sum.amount!, 0)
+    }
     
-    return data.walltes.map(wallet =>
+    return {wallets: data.walltes.map(wallet =>
       ({
         ...wallet,
         monthIncomes: incomes.find(income => income.walletId == wallet.id)?._sum?.amount || 0,
         monthExpenses: expenses.find(expense => expense.walletId == wallet.id)?._sum?.amount || 0,
-        totalBalance,
-      }));
+      })),
+      balance: {
+        total: totalBalance,
+        ...MonthBalance
+      }
+    }
   }
 }
