@@ -8,7 +8,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="flex p-3 min-h-[100vh] bg-amber-50 dark:bg-[#171717]">
+    <div className="flex p-3 min-h-[100vh] bg-amber-50 dark:bg-background">
       <div className="w-1/6 sticky top-5 h-fit min-h-[100vh]">
         <Sidebar />
       </div>
