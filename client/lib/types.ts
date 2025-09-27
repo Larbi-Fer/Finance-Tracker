@@ -19,7 +19,7 @@ interface WalletProps {
 }
 
 interface WalletAndTotalDataProps {
-  wallets: WalletDataProps
+  wallets: WalletDataProps[]
   balance: TotalBalanceProps
 }
 
@@ -32,7 +32,7 @@ interface TotalBalanceProps {
 interface ExpenseProps {
   id: string,
   title: string,
-  amount: number,
+  amount: number | string,
   date: string,
   category: {
     id: string,
@@ -43,7 +43,7 @@ interface ExpenseProps {
 interface IncomeProps {
   id: string,
   title?: string,
-  amount: number,
+  amount: number | string,
   date: string,
   source: {
     id: string,
