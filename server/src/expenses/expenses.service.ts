@@ -9,6 +9,14 @@ export class ExpensesService {
     return this.prisma.expenses.findMany({
       where: { wallet: {userId: id} },
       orderBy: { date: 'desc' },
+      include: {
+        category: {
+          select: {id: true, title: true}
+        },
+        wallet: {
+          select: {id: true, name: true, currnecy: {select: {format: true}}}
+        }
+      },
       take: limit,
       skip: offset,
     });

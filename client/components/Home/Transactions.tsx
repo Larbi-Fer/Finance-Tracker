@@ -1,10 +1,10 @@
 'use client'
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "../ui/DataTable"
-import { formatDistanceToNow } from "date-fns"
+import { differenceInDays, formatDate, formatDistanceToNow } from "date-fns"
 import { useRouter } from "next/navigation"
 
-const columns: ColumnDef<ExpenseProps & {wallet: string}>[] = [
+const columns: ColumnDef<ExpenseProps>[] = [
   {
     accessorKey: "title",
     header: "Transaction title",
@@ -12,7 +12,13 @@ const columns: ColumnDef<ExpenseProps & {wallet: string}>[] = [
   {
     accessorKey: "date",
     header: "Date",
-    cell: ({row}) => formatDistanceToNow(row.getValue('date'), {addSuffix: true})
+    cell: ({row}) => {
+      const date = new Date(row.getValue('date'))
+      const daysDiff = differenceInDays(new Date(), date);
+
+      if (daysDiff > 3) return formatDate(date, 'dd MMM yyyy')
+      return formatDistanceToNow(row.getValue('date'), {addSuffix: true})
+    }
   },
   {
     accessorKey: "category",
@@ -25,6 +31,12 @@ const columns: ColumnDef<ExpenseProps & {wallet: string}>[] = [
   {
     accessorKey: "wallet",
     header: "Wallet",
+    cell: ({row}) => {
+      const w = row.getValue('wallet')
+      if (typeof(w) == 'string') return w
+      // @ts-ignore
+      return w.name
+    }
   },
   {
     accessorKey: "amount",
@@ -33,16 +45,14 @@ const columns: ColumnDef<ExpenseProps & {wallet: string}>[] = [
   },
 ]
 
-const Transactions = ({data}: {data: (ExpenseProps & {wallet: string})[]}) => {
+const Transactions = ({data}: {data: ExpenseProps[]}) => {
   const router = useRouter()
 
   return (
-    <div>
-      <DataTable columns={columns} data={data} onRowClick={row => {
-        const data: any = row.original
-        router.push('/expenses/' + data.id)
-      }} />
-    </div>
+    <DataTable columns={columns} data={data} onRowClick={row => {
+      const data: any = row.original
+      router.push('/expenses/' + data.id)
+    }} />
   )
 }
 

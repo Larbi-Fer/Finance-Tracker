@@ -8,6 +8,7 @@ export class CategoriesService {
   async getCategories(userId: string) {
     const categ = await this.prisma.categories.findMany({
       where: { userId },
+      omit: {userId: true},
       include: {
         _count: {
           select: { expenses: true }
