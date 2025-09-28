@@ -19,7 +19,7 @@ export class HomeService {
               take: 10,
               include: {
                 category: {
-                  omit: {userId: true, amount: true}
+                  omit: {userId: true}
                 },    
               },
               omit: {

@@ -3,29 +3,94 @@ import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class CategoriesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async getCategories(userId: string) {
-    const categ = await this.prisma.categories.findMany({
+    // Fetch categories
+    const categories = await this.prisma.categories.findMany({
       where: { userId },
       omit: {userId: true},
       include: {
         _count: {
           select: { expenses: true }
+        },
+        budget: {
+          select: {
+            amount: true,
+            currency: { select: { format: true, id: true } }
+          }
         }
       }
     });
 
+    // Get first day of this month
     const now = new Date();
     const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1);
-    const sum = await this.prisma.expenses.groupBy({
-      by: ['categoryId'],
-      _sum: {amount: true},
-      where: { wallet: {userId}, date: { gte: firstDayOfMonth } },
-    })
 
-    return categ.map(c => ({...c, month: sum.find(s => s.categoryId == c.id)?._sum?.amount || 0}));
+    // Group expenses by category and wallet
+    const groupedExpenses = await this.prisma.expenses.groupBy({
+      by: ['categoryId', 'walletId'],
+      _sum: { amount: true },
+      where: {
+        wallet: { userId },
+        date: { gte: firstDayOfMonth }
+      }
+    });
+
+    // Fetch wallets to get currency per wallet
+    const wallets = await this.prisma.wallets.findMany({
+      where: { userId },
+      select: {
+        id: true,
+        currnecy: {
+          select: { id: true, format: true }
+        }
+      }
+    });
+
+    // Map walletId -> currency
+    const walletCurrencyMap = Object.fromEntries(
+      wallets.map(w => [w.id, w.currnecy])
+    );
+
+    // Sum expenses per category + currency
+    const expenseSums = new Map<string, number>();
+
+    for (const g of groupedExpenses) {
+      const currency = walletCurrencyMap[g.walletId!];
+      if (!currency) continue;
+
+      const key = `${g.categoryId}-${currency.id}`;
+      const prev = expenseSums.get(key) || 0;
+      expenseSums.set(key, prev + (g._sum.amount || 0));
+    }
+
+    // Get all distinct user currencies (in case some budgets are missing)
+    const userCurrencies = Object.values(
+      Object.fromEntries(wallets.map(w => [w.currnecy.id, w.currnecy]))
+    );
+
+    // Final return with spent added to each budget
+    return categories.map(category => {
+      // Ensure all user currencies are present in budget
+      const completeBudget = userCurrencies.map(currency => {
+        const existing = category.budget.find(b => b.currency.id === currency.id);
+        const spent = expenseSums.get(`${category.id}-${currency.id}`) || 0;
+
+        return {
+          amount: existing?.amount || 0,
+          currency: { format: currency.format },
+          spent
+        };
+      });
+
+      return {
+        ...category,
+        budget: completeBudget
+      };
+    });
   }
+
 
   async getCategory(id: string, userId: string) {
     const category = await this.prisma.categories.findUnique({

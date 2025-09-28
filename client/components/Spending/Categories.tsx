@@ -1,5 +1,6 @@
 import Link from "next/link"
 import { Progress } from "../ui/progress"
+import React from "react"
 
 const Categories = ({categs}: {categs: CategoryProps[]}) => {
   return (
@@ -7,7 +8,7 @@ const Categories = ({categs}: {categs: CategoryProps[]}) => {
       {categs.map(categ => (
         <Link
           key={categ.id}
-          className="bg-white dark:bg-neutral-800 shadow-sm rounded-lg p-4 flex flex-col gap-4 border border-neutral-200
+          className="bg-white dark:bg-neutral-800 shadow-sm rounded-lg p-4 flex flex-col gap-2 border border-neutral-200
                     dark:border-neutral-700 transition-colors hover:bg-amber-100 dark:hover:bg-neutral-700"
           href={'/category/' + categ.id}
         >
@@ -19,14 +20,18 @@ const Categories = ({categs}: {categs: CategoryProps[]}) => {
             </h3>
           </div>
 
-          {/* Spent & Budget Info */}
-          <div className="flex justify-between text-sm text-neutral-600 dark:text-neutral-400">
-            <span>Spent: ${categ.month}</span>
-            <span>Remaining: ${categ.amount - categ.month}</span>
-          </div>
+          {categ.budget.map((b, i) => (
+            <React.Fragment key={i}>
+              {/* Spent & Budget Info */}
+              <div className="flex justify-between text-sm text-neutral-600 dark:text-neutral-400 mt-2">
+                <span>Spent: {b.currency.format.replace('{}', String(b.spent))}</span>
+                <span>{b.amount ? ('Remaining: ' + b.currency.format.replace('{}', String(b.amount - b.spent))) : "No budget entered"}</span>
+              </div>
 
-          {/* Progress Bar */}
-          <Progress value={(categ.month / categ.amount) * 100} />
+              {/* Progress Bar */}
+              <Progress value={b.amount ? ((b.spent / b.amount) * 100) : 0} />
+            </React.Fragment>
+          ))}
         </Link>
       ))}
     </div>

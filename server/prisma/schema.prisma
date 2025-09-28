@@ -40,16 +40,28 @@ model Currencies {
   format String
 
   wallets Wallets[]
+  budget Budget[]
 }
 
 model Categories {
   id     String @id @default(cuid())
   title  String
-  amount Int
   userId String
 
   expenses Expenses[]
+  budget Budget[]
   user User @relation(fields: [userId], references: [id])
+}
+
+model Budget {
+  currencyId String
+  categoryId String
+  amount Int
+
+  currency Currencies @relation(fields: [currencyId], references: [id])
+  category Categories @relation(fields: [categoryId], references: [id])
+
+  @@id([currencyId, categoryId])
 }
 
 model Expenses {

@@ -71,9 +71,12 @@ interface WalletDataProps extends WalletProps {
 interface CategoryProps {
   id: string
   title: string
-  amount: number
   _count: {
     expenses: number
   }
-  month: number
+  budget: {
+    amount: number
+    currency: { format: string }
+    spent: number
+  }[]
 }
