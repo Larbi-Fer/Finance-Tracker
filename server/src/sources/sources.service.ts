@@ -8,11 +8,12 @@ export class SourcesService {
   async getSources(userId: string) {
     const sources = await this.prisma.incomeSources.findMany({
       where: { userId },
-      omit: {userId: true},
+      omit: {userId: true, currencyId: true,},
       include: {
         _count: {
           select: { incomes: true }
-        }
+        },
+        currency: {select: {format: true}}
       },
     });
 
@@ -24,7 +25,7 @@ export class SourcesService {
       where: { wallet: {userId}, date: { gte: firstDayOfMonth } },
     })
 
-    return sources.map(source => ({...source, month: sum.find(s => s.sourceId == source.id)?._sum?.amount || 0}));
+    return sources.map(source => ({...source, earned: sum.find(s => s.sourceId == source.id)?._sum?.amount || 0}));
   }
 
   async getSource(id: string, userId: string) {
@@ -47,7 +48,7 @@ export class SourcesService {
     return source;
   }
 
-  createSource(userId: string, data: { title: string }) {
+  createSource(userId: string, data: { title: string, currencyId: string }) {
     return this.prisma.incomeSources.create({
       data: {
         ...data,

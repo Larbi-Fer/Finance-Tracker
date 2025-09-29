@@ -3,16 +3,16 @@
 import { EXPENSES_FOR_EACH_PAGE } from "@/lib/constantes";
 import api from "./api";
 
-const path = '/expenses/'
+const path = '/sources/'
 
-type expensesActionProps = {
+type SourcesActionProps = {
   type: 'SUCCESS' | 'ERROR'
-  payload: ExpenseProps[]
+  payload: SourceProps[]
 }
 
-export const getExpenses = async (id: string, limit?: number, offset?: number) : Promise<expensesActionProps> => {
+export const getSources = async (id: string) : Promise<SourcesActionProps> => {
   try {
-    const data = await api.get(`${id}${path}?limit=${limit || EXPENSES_FOR_EACH_PAGE}&offset=${offset || 0}`)
+    const data = await api.get(`${id}${path}`)
     if (data.error) {
       throw new Error(data.message)
     }

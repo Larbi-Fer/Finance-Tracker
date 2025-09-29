@@ -8,6 +8,23 @@ export class IncomesService {
   getIncomes(id: string, limit?: number, offset?: number) {
     return this.prisma.incomes.findMany({
       where: { wallet: {userId: id} },
+      include: {
+        source: {
+          select: {
+            id: true, title: true
+          }
+        },
+        wallet: {
+          select: {
+            name: true,
+            currnecy: {
+              select: {
+                format: true
+              }
+            }
+          }
+        }
+      },
       orderBy: { date: 'desc' },
       take: limit,
       skip: offset,

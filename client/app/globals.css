@@ -53,6 +53,11 @@ html.dark {
   @apply flex justify-center items-center;
 }
 
+@utility loading {
+  @apply after:w-3 after:h-3 after:block after:border-2 after:border-t-0 after:rounded-[50%];
+  @apply flex-center gap-1
+}
+
 @layer base {
   button {
     padding: 5px 20px;

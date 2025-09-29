@@ -64,6 +64,7 @@ interface IncomeProps {
     id: string,
     title: string
   }
+  wallet?: WalletInsideExpenseProps | string
 }
 
 interface WalletDataProps extends WalletProps {
@@ -83,4 +84,15 @@ interface CategoryProps {
     currency: { format: string }
     spent: number
   }[]
+}
+
+// income source
+interface SourceProps {
+  id: string
+  title: string
+  _count: {
+    incomes: number
+  }
+  currency: { format: string }
+  earned: number
 }

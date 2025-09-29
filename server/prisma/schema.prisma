@@ -14,8 +14,8 @@ model User {
   password String
   isActive Boolean @default(false)
 
-  walltes Wallets[]
-  categories Categories[]
+  walltes       Wallets[]
+  categories    Categories[]
   incomeSources IncomeSources[]
 }
 
@@ -25,7 +25,7 @@ model Wallets {
 
   currencyId      String
   userId          String
-  incomeBalance    Int    @default(0)
+  incomeBalance   Int    @default(0)
   expensesBalance Int    @default(0)
 
   currnecy Currencies @relation(fields: [currencyId], references: [id])
@@ -39,8 +39,9 @@ model Currencies {
   name   String
   format String
 
-  wallets Wallets[]
-  budget Budget[]
+  wallets       Wallets[]
+  budget        Budget[]
+  incomeSources IncomeSources[]
 }
 
 model Categories {
@@ -49,14 +50,14 @@ model Categories {
   userId String
 
   expenses Expenses[]
-  budget Budget[]
-  user User @relation(fields: [userId], references: [id])
+  budget   Budget[]
+  user     User       @relation(fields: [userId], references: [id])
 }
 
 model Budget {
   currencyId String
   categoryId String
-  amount Int
+  amount     Int
 
   currency Currencies @relation(fields: [currencyId], references: [id])
   category Categories @relation(fields: [categoryId], references: [id])
@@ -77,12 +78,14 @@ model Expenses {
 }
 
 model IncomeSources {
-  id    String @id @default(cuid())
-  title String
-  userId String
+  id         String @id @default(cuid())
+  title      String
+  userId     String
+  currencyId String
 
-  incomes Incomes[]
-  user User @relation(fields: [userId], references: [id])
+  incomes  Incomes[]
+  currency Currencies @relation(fields: [currencyId], references: [id])
+  user     User       @relation(fields: [userId], references: [id])
 
   @@map("income_sources")
 }

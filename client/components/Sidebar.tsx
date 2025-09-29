@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import {HomeIcon, SpendingIcon} from "@/icons"
+import {HomeIcon, IncomeIcon, SpendingIcon} from "@/icons"
 import { ReactNode } from "react"
 
 const Sidebar = () => {
@@ -12,6 +12,7 @@ const Sidebar = () => {
 
       <Item href="/home" text="Home" icon={<HomeIcon />} />
       <Item href="/spending" text="Spending" icon={<SpendingIcon />} />
+      <Item href="/incomes" text="Incomes" icon={<IncomeIcon />} />
     </div>
   )
 }
