@@ -20,13 +20,17 @@ interface WalletProps {
 
 interface WalletAndTotalDataProps {
   wallets: WalletDataProps[]
-  balance: TotalBalanceProps
+  balance: TotalBalanceProps[]
 }
 
 interface TotalBalanceProps {
   total: number
-  totalIncomes: number
-  totalExpenses: number
+  monthIncomes: number
+  monthExpenses: number
+  currency: {
+    name: string
+    format: string
+  }
 }
 
 interface ExpenseProps {

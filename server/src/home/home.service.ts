@@ -57,13 +57,35 @@ export class HomeService {
       by: ['walletId'],
       _sum: {amount: true},
       where: { wallet: {userId: id}, date: { gte: firstDayOfMonth } },
-    })    
+    })
 
-    const totalBalance = data.walltes.reduce((acc, wallet) => acc + wallet.incomeBalance - wallet.expensesBalance, 0);
-    const MonthBalance = {
-      totalIncomes: incomes.reduce((acc, i) => acc + i._sum.amount!, 0),
-      totalExpenses: expenses.reduce((acc, i) => acc + i._sum.amount!, 0)
+    const balanceByCurrency = data.walltes.reduce((acc, wallet) => {
+    const currencyCode = wallet.currnecy?.name || 'UNKNOWN';
+
+    if (!acc[currencyCode]) {
+      acc[currencyCode] = {
+        total: 0,
+        monthIncomes: 0,
+        monthExpenses: 0,
+        currency: wallet.currnecy,
+      };
     }
+
+    const walletMonthIncome = incomes.find(income => income.walletId === wallet.id)?._sum?.amount || 0;
+    const walletMonthExpense = expenses.find(expense => expense.walletId === wallet.id)?._sum?.amount || 0;
+
+    acc[currencyCode].total += wallet.incomeBalance - wallet.expensesBalance;
+    acc[currencyCode].monthIncomes += walletMonthIncome;
+    acc[currencyCode].monthExpenses += walletMonthExpense;
+
+    return acc;
+  }, {} as Record<string, {
+    total: number,
+    monthIncomes: number,
+    monthExpenses: number,
+    currency: any
+  }>);
+
     
     return {wallets: data.walltes.map(wallet =>
       ({
@@ -71,10 +93,7 @@ export class HomeService {
         monthIncomes: incomes.find(income => income.walletId == wallet.id)?._sum?.amount || 0,
         monthExpenses: expenses.find(expense => expense.walletId == wallet.id)?._sum?.amount || 0,
       })),
-      balance: {
-        total: totalBalance,
-        ...MonthBalance
-      }
+      balance: Object.values(balanceByCurrency)
     }
   }
 }

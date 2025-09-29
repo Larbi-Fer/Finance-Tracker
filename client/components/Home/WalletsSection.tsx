@@ -1,19 +1,27 @@
 
-const WalletsSection = ({wallets, total}: {wallets: WalletProps[], total: TotalBalanceProps}) => {
+const WalletsSection = ({wallets, total}: {wallets: WalletProps[], total: TotalBalanceProps[]}) => {
   const balance = wallets.reduce((acc, w) => acc + (w.incomeBalance - w.expensesBalance), 0)
 
   return (
     <div>
-      <div className="flex-center justify-start">
-        <Card wallet={{
-          ...wallets[0],
-          name: 'Total',
-          monthExpenses: total.totalExpenses,
-          monthIncomes: total.totalIncomes,
-        }} balance={total.total} background="linear-gradient(45deg, rgb(125 34 0), #4f4f4fa8)" />
-        {wallets.map(wallet => (
-          <Card wallet={wallet} key={wallet.id} />
-        ))}
+      <div className={total.length == 1 ? 'flex-center justify-start' : ''}>
+        <div className="flex-center justify-start">
+          {total.map(currency => (
+            <Card key={currency.currency.name} wallet={{
+              ...wallets[0],
+              name: currency.currency.name,
+              currnecy: currency.currency,
+              monthExpenses: currency.monthExpenses,
+              monthIncomes: currency.monthIncomes,
+            }} balance={currency.total} background="linear-gradient(45deg, rgb(125 34 0), #4f4f4fa8)" />
+          ))}
+        </div>
+
+        <div className="flex-center justify-start">
+          {wallets.map(wallet => (
+            <Card wallet={wallet} key={wallet.id} />
+          ))}
+        </div>
       </div>
     </div>
   )
