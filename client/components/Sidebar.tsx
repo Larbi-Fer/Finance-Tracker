@@ -1,6 +1,7 @@
 import Link from "next/link"
 import Image from "next/image"
-import HomeIcon from "@/icons/HomeIcon"
+import {HomeIcon, SpendingIcon} from "@/icons"
+import { ReactNode } from "react"
 
 const Sidebar = () => {
   return (
@@ -9,15 +10,16 @@ const Sidebar = () => {
         <label className="text-2xl">Dollar - USA</label>
       </div>
 
-      <Item href="/home" text="Home" />
+      <Item href="/home" text="Home" icon={<HomeIcon />} />
+      <Item href="/spending" text="Spending" icon={<SpendingIcon />} />
     </div>
   )
 }
 
-const Item = ({href, text}: {href: string, text: string}) => (
+const Item = ({href, text, icon}: {href: string, text: string, icon: ReactNode}) => (
     <Link href={href}>
       <button className="w-full py-[3px] px-1 my-2 flex-center justify-start text-left bg-transparent hover:bg-[#aaa3]">
-        <HomeIcon />
+        {icon}
         <div className="px-2">{text}</div>
       </button>
     </Link>
