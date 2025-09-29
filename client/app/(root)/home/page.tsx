@@ -35,7 +35,7 @@ const HomePage = async() => {
       <div className="flex">
         <div className="w-7/12 p-2">
           <div className="text-xl pb-1">Last expenses</div>
-          <Transactions data={expenses} />
+          <Transactions expenses={expenses} />
         </div>
         
         <div className="w-5/12 p-2 border-s">

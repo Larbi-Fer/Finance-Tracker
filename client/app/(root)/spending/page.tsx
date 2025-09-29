@@ -14,7 +14,7 @@ const SpendingPage = async () => {
     <div>
       <Categories categs={categories.payload} />
       <div className="p-2">
-        <Transactions data={expenses.payload.map(e => ({...e, amount: (e.wallet as WalletInsideExpenseProps)?.currnecy?.format.replace('{}', String(e.amount))!}))} />
+        <Transactions expenses={expenses.payload.map(e => ({...e, amount: (e.wallet as WalletInsideExpenseProps)?.currnecy?.format.replace('{}', String(e.amount))!}))} loadMoreExpenses />
       </div>
     </div>
   )

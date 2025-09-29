@@ -25,8 +25,10 @@ interface DataTableProps<TData, TValue> {
 export function DataTable<TData, TValue>({
   columns,
   data,
-  onRowClick
-}: DataTableProps<TData, TValue> & {onRowClick?: (row: Row<TData>) => void}) {
+  onRowClick,
+  onLoadMore,
+  loading
+}: DataTableProps<TData, TValue> & {onRowClick?: (row: Row<TData>) => void, onLoadMore?: () => void, loading?: boolean}) {
   const table = useReactTable({
     data,
     columns,
@@ -56,20 +58,31 @@ export function DataTable<TData, TValue>({
         </TableHeader>
         <TableBody>
           {table.getRowModel().rows?.length ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow
-                key={row.id}
-                data-state={row.getIsSelected() && "selected"}
-                className={onRowClick ? "cursor-pointer" : ''}
-                onClick={onRowClick && (() => onRowClick(row))}
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+            <>
+              {table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                  className={onRowClick ? "cursor-pointer" : ''}
+                  onClick={onRowClick && (() => onRowClick(row))}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))}
+              {onLoadMore &&
+                <TableRow>
+                  <TableCell colSpan={columns.length} onClick={onLoadMore}
+                    className={"text-center cursor-pointer hover:bg-[#3332] dark:hover:bg-[#aaa2]" + (loading ? ' loading' : '')}
+                  >
+                    Load more
                   </TableCell>
-                ))}
-              </TableRow>
-            ))
+                </TableRow>
+              }
+            </>
           ) : (
             <TableRow>
               <TableCell colSpan={columns.length} className="h-24 text-center">

@@ -3,6 +3,11 @@ import { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "../ui/DataTable"
 import { differenceInDays, formatDate, formatDistanceToNow } from "date-fns"
 import { useRouter } from "next/navigation"
+import { useState } from "react"
+import { getExpenses } from "@/actions/expenses.actions"
+import { useSelector } from "react-redux"
+import { RootState } from "@/lib/store"
+import { EXPENSES_FOR_EACH_PAGE } from "@/lib/constantes"
 
 const columns: ColumnDef<ExpenseProps>[] = [
   {
@@ -45,14 +50,37 @@ const columns: ColumnDef<ExpenseProps>[] = [
   },
 ]
 
-const Transactions = ({data}: {data: ExpenseProps[]}) => {
+const Transactions = ({expenses, loadMoreExpenses}: {expenses: ExpenseProps[], loadMoreExpenses?: boolean}) => {
+  const id = useSelector((state: RootState) => state.user?.id)!
+  const [page, setPage] = useState(1)
+  const [data, setData] = useState(expenses)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
+
+  if (!loadMoreExpenses) return <DataTable columns={columns} data={data} onRowClick={row => {
+      const data: any = row.original
+      router.push('/expenses/' + data.id)
+    }} />
+
+  const loadMore = async () => {
+    setLoading(true)
+
+    const result = await getExpenses(id, EXPENSES_FOR_EACH_PAGE, page*EXPENSES_FOR_EACH_PAGE)
+    if (result.type == 'ERROR') {
+      setLoading(false)
+      console.log('error', result);
+    }
+    setPage(prev => ++prev)
+    setData(prev => prev.concat(result.payload.map(e => ({...e, amount: (e.wallet as WalletInsideExpenseProps)?.currnecy?.format.replace('{}', String(e.amount))!}))))
+
+    setLoading(false)
+  }
 
   return (
     <DataTable columns={columns} data={data} onRowClick={row => {
       const data: any = row.original
       router.push('/expenses/' + data.id)
-    }} />
+    }} onLoadMore={loadMore} loading={loading} />
   )
 }
 
