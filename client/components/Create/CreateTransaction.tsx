@@ -16,8 +16,7 @@ const CreateTransaction = ({userId, categories, wallets}: {categories: DropdownL
   const [type, setType] = useState<'Income' | 'Expense'>('Expense')
   const {flds, handleChange, loading, handleSubmit, setFlds} = useForm(fields, async(done, data) => {
     const result = await createExpense(userId, {...data, amount: parseInt(data.amount)})
-    console.log(result);
-    // console.log(data);
+    if (result.type == 'ERROR') console.error(result);
     done()
   })
 
@@ -26,12 +25,18 @@ const CreateTransaction = ({userId, categories, wallets}: {categories: DropdownL
       <Input type="text" placeholder="Title" name="title" onChange={handleChange} value={flds.title} />
 
       <Dropdown
+      placeholder="Choose a wallet"
         list={wallets.map(w => ({...w, title: w.name}))}
         suffix={wallet => wallet.currnecy.format.replace('{}', wallet.balance)}
         val={flds.walletId}
         handleChange={val => setFlds(prev => ({...prev, walletId: val}))}
       />
-      <Dropdown list={categories} val={flds.categoryId} handleChange={val => setFlds(prev => ({...prev, categoryId: val}))} />
+      <Dropdown
+        placeholder="Choose a category"
+        list={categories}
+        val={flds.categoryId}
+        handleChange={val => setFlds(prev => ({...prev, categoryId: val}))}
+      />
 
       <div className="flex">
         <div className="w-1/6 flex-center">{ flds.walletId && wallets.find(w => w.id === flds.walletId)?.currnecy.format.replace('{}', '') }</div>
@@ -45,11 +50,11 @@ const CreateTransaction = ({userId, categories, wallets}: {categories: DropdownL
   )
 }
 
-const Dropdown = ({ list, val, handleChange, suffix }: {list: DropdownListProps, val: string, handleChange: (val: string) => void, suffix?: (item: any) => string}) => {
+const Dropdown = ({ list, val, handleChange, suffix, placeholder }: {list: DropdownListProps, val: string, handleChange: (val: string) => void, suffix?: (item: any) => string, placeholder: string}) => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <button className="w-full my-2 text-start">{val ? list.find(v => v.id == val)?.title : 'Choose a category'}</button>
+        <button className="w-full my-2 text-start">{val ? list.find(v => v.id == val)?.title : placeholder}</button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56">
         <DropdownMenuRadioGroup value={val} onValueChange={handleChange}>
