@@ -4,6 +4,15 @@ interface UserProps {
   email: string
 }
 
+interface WalletMainProps {
+  id: string
+  name: string
+  balance: number
+  currnecy: {
+    format: string
+  }
+}
+
 interface WalletProps {
   id: string
   name: string
@@ -11,8 +20,8 @@ interface WalletProps {
   incomeBalance: number
   expensesBalance: number
   currnecy: {
-      name: string
-      format: string
+    name: string
+    format: string
   }
   monthIncomes: number
   monthExpenses: number

@@ -12,9 +12,10 @@ import { IncomesModule } from './incomes/incomes.module';
 import { CategoriesService } from './categories/categories.service';
 import { CategoriesModule } from './categories/categories.module';
 import { SourcesModule } from './sources/sources.module';
+import { WalletsModule } from './wallets/wallets.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule, HomeModule, ExpensesModule, IncomesModule, CategoriesModule, SourcesModule],
+  imports: [AuthModule, PrismaModule, HomeModule, ExpensesModule, IncomesModule, CategoriesModule, SourcesModule, WalletsModule],
   controllers: [AppController, HomeController],
   providers: [AppService, PrismaService, HomeService, CategoriesService],
 })

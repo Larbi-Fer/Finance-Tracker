@@ -7,7 +7,7 @@ const path = '/expenses/'
 
 type expensesActionProps = {
   type: 'SUCCESS' | 'ERROR'
-  payload: ExpenseProps[]
+  payload: ExpenseProps[] | ExpenseProps
 }
 
 export const getExpenses = async (id: string, limit?: number, offset?: number) : Promise<expensesActionProps> => {
@@ -16,7 +16,19 @@ export const getExpenses = async (id: string, limit?: number, offset?: number) :
     if (data.error) {
       throw new Error(data.message)
     }
-    return { type: 'SUCCESS', payload: data }
+    return { type: 'SUCCESS', payload: data as ExpenseProps[] }
+  } catch (error: any) {
+    return { type: 'ERROR', payload: error.message}
+  }
+}
+
+export const createExpense = async (userId: string, expenseData: any) : Promise<expensesActionProps> => {
+  try {
+    const data = await api.post(`${userId}${path}`, expenseData)
+    if (data.error) {
+      throw new Error(data.message)
+    }
+    return { type: 'SUCCESS', payload: data as ExpenseProps }
   } catch (error: any) {
     return { type: 'ERROR', payload: error.message}
   }
