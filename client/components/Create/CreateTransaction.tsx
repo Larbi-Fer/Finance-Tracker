@@ -8,6 +8,7 @@ import { createExpense } from "@/actions/expenses.actions"
 import { createIncome } from "@/actions/incomes.actions"
 import Dropdown, { DropdownListProps } from "../ui/Dropdown"
 import IconPicker from "../ui/IconPicker"
+import { usePathname, useSearchParams } from "next/navigation"
 
 const fields = {title: '', icon: '', amount: '', date: format(new Date(), 'yyyy-MM-dd'), categoryId: '', walletId: '', sourceId: ''}
 
@@ -20,7 +21,8 @@ type CreateTransactionProps = {
 
 const CreateTransaction = ({userId, categories, wallets, sources}: CreateTransactionProps) => {
 
-  const [type, setType] = useState<'Income' | 'Expense'>('Expense')
+  const params = useSearchParams()
+  const [type, setType] = useState<'Income' | 'Expense'>(params.get('type') == 'income' ? 'Income' : 'Expense')
   const {flds, handleChange, loading, handleSubmit, setFlds} = useForm(fields, async(done, data) => {
     let result;
     if (type == 'Expense') result = await createExpense(userId, {...data, amount: parseInt(data.amount)})

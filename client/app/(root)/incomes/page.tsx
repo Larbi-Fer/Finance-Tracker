@@ -16,7 +16,7 @@ const IncomesPage = async () => {
       <div className="p-2">
         <div className="p-1 flex justify-between items-center">
           <label className="text-lg font-bold">Incomes</label>
-          <Link href='incomes/create'>
+          <Link href='create/transaction?type=income'>
             <button>+ Income</button>
           </Link>
         </div>

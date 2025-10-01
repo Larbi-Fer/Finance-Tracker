@@ -17,7 +17,7 @@ const SpendingPage = async () => {
       <div className="p-2">
         <div className="p-1 flex justify-between items-center">
           <label className="text-lg font-bold">Transactions</label>
-          <Link href='spending/create'>
+          <Link href='create/transaction?type=expense'>
             <button>+ Expense</button>
           </Link>
         </div>
