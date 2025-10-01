@@ -4,15 +4,12 @@ import { useForm } from "@/lib/customHooks"
 import { useState } from "react"
 import { Input } from "../ui/input"
 import {format} from 'date-fns'
-import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuRadioGroup, DropdownMenuRadioItem, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu"
 import { createExpense } from "@/actions/expenses.actions"
-import EmojiPicker, { EmojiClickData } from "emoji-picker-react"
-import { cn } from "@/lib/utils"
 import { createIncome } from "@/actions/incomes.actions"
+import Dropdown, { DropdownListProps } from "../ui/Dropdown"
+import IconPicker from "../ui/IconPicker"
 
 const fields = {title: '', icon: '', amount: '', date: format(new Date(), 'yyyy-MM-dd'), categoryId: '', walletId: '', sourceId: ''}
-
-type DropdownListProps = {id: string, title: string, [key: string]: any}[]
 
 type CreateTransactionProps = {
   userId: string
@@ -36,7 +33,7 @@ const CreateTransaction = ({userId, categories, wallets, sources}: CreateTransac
   return (
     <form onSubmit={handleSubmit} className="max-w-[500px] m-auto mt-7">
 
-      <div>
+      <div className="mb-4">
         <button
           onClick={() => setType(prev => 'Income')}
           type="button"
@@ -115,41 +112,6 @@ const CreateTransaction = ({userId, categories, wallets, sources}: CreateTransac
 
       <button>Create</button>
     </form>
-  )
-}
-
-const Dropdown = ({ list, val, handleChange, suffix, placeholder }: {list: DropdownListProps, val: string, handleChange: (val: string) => void, suffix?: (item: any) => string, placeholder: string}) => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className={"w-full my-2 text-start" + (val ? '' : ' text-muted-foreground')}>{val ? list.find(v => v.id == val)?.title : placeholder}</button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-60">
-        <DropdownMenuRadioGroup value={val} onValueChange={handleChange}>
-          {list.map(item => (
-            <DropdownMenuRadioItem key={item.id} value={item.id} className="flex justify-between">
-              <div>{item.title}</div>
-              {suffix && <div>{suffix(item)}</div>}
-            </DropdownMenuRadioItem>
-          ))}
-        </DropdownMenuRadioGroup>
-      </DropdownMenuContent>
-    </DropdownMenu>
-  )
-}
-
-const IconPicker = ({icon, className, onEmojiClick}: {icon: string, className?: string, onEmojiClick: (props: EmojiClickData) => void}) => {
-  return (
-    <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <button className={cn("p-1 my-2 text-center", className)}>{icon || 'Icon'}</button>
-      </DropdownMenuTrigger>
-      <DropdownMenuContent className="w-full">
-        <div>
-          <EmojiPicker onEmojiClick={onEmojiClick} />
-        </div>
-      </DropdownMenuContent>
-    </DropdownMenu>
   )
 }
 
