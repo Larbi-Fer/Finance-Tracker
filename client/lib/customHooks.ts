@@ -17,8 +17,12 @@ export const useForm = <T extends { [key: string]: any }>(
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault()
+    if (loading) return
     setLoading(true)
-    onSubmit(() => setLoading(false), flds)
+    onSubmit(() => {
+      setLoading(false)
+      setFlds(fields)
+    }, flds)
   }
 
   return { flds, setFlds, loading, handleChange, handleSubmit }

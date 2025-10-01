@@ -18,8 +18,6 @@ export class IncomesController {
 
   @Post('')
   createIncome(@Param('id') id: string, @Body() body: IncomeDto) {
-    console.log(body);
-    
     return this.incomesService.createIncome({
       title: body.title,
       amount: body.amount,
