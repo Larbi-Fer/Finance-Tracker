@@ -105,3 +105,10 @@ interface SourceProps {
   currency: { format: string }
   earned: number
 }
+
+
+interface CurrencyProps {
+  id: string
+  name: string
+  format: string
+}
