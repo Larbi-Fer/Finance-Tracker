@@ -8,7 +8,7 @@ import { createExpense } from "@/actions/expenses.actions"
 import { createIncome } from "@/actions/incomes.actions"
 import Dropdown, { DropdownListProps } from "../ui/Dropdown"
 import IconPicker from "../ui/IconPicker"
-import { usePathname, useSearchParams } from "next/navigation"
+import { useSearchParams } from "next/navigation"
 
 const fields = {title: '', icon: '', amount: '', date: format(new Date(), 'yyyy-MM-dd'), categoryId: '', walletId: '', sourceId: ''}
 

@@ -16,7 +16,6 @@ type CreateTransactionProps = {
 
 const CreateWallet = ({userId, currencies}: CreateTransactionProps) => {
 
-  const params = useSearchParams()
   const {flds, handleChange, loading, handleSubmit, setFlds} = useForm(fields, async(done, data) => {
     const res = await createWallet(userId, data)
     if (res.type == 'ERROR') console.error(res);
