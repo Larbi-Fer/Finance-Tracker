@@ -20,8 +20,9 @@ model User {
 }
 
 model Wallets {
-  id   String @id @default(cuid())
+  id   String  @id @default(cuid())
   name String
+  icon String?
 
   currencyId      String
   userId          String
@@ -68,6 +69,7 @@ model Budget {
 model Expenses {
   id         String   @id @default(cuid())
   title      String
+  icon       String?
   amount     Int      @default(0)
   date       DateTime
   categoryId String?
@@ -93,6 +95,7 @@ model IncomeSources {
 model Incomes {
   id       String   @id @default(cuid())
   title    String?
+  icon     String?
   amount   Int      @default(0)
   date     DateTime
   sourceId String

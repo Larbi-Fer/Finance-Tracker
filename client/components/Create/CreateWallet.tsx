@@ -7,7 +7,7 @@ import IconPicker from "../ui/IconPicker"
 import { useSearchParams } from "next/navigation"
 import { createWallet } from "@/actions/wallets.actions"
 
-const fields = {name: '', currencyId: '', icon: ''}
+const fields = {name: '', currencyId: '', icon: '💳'}
 
 type CreateTransactionProps = {
   userId: string

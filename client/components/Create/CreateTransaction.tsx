@@ -23,8 +23,10 @@ const CreateTransaction = ({userId, categories, wallets, sources}: CreateTransac
 
   const params = useSearchParams()
   const [type, setType] = useState<'Income' | 'Expense'>(params.get('type') == 'income' ? 'Income' : 'Expense')
-  const {flds, handleChange, loading, handleSubmit, setFlds} = useForm(fields, async(done, data) => {
+  const {flds, handleChange, loading, handleSubmit, setFlds} = useForm({...fields, icon: type == 'Expense' ? '⬇️' : '⬆️'}, async(done, data) => {
     let result;
+    console.log(data);
+    
     if (type == 'Expense') result = await createExpense(userId, {...data, amount: parseInt(data.amount)})
     else result = await createIncome(userId, {...data, amount: parseInt(data.amount)})
 
@@ -37,12 +39,18 @@ const CreateTransaction = ({userId, categories, wallets, sources}: CreateTransac
 
       <div className="mb-4">
         <button
-          onClick={() => setType(prev => 'Income')}
+          onClick={() => {
+            setType(prev => 'Income')
+            setFlds(prev => ({...prev, icon: '⬆️'}))
+          }}
           type="button"
           className={'rounded-e-[0] border w-1/2' + (type == 'Income' ? '' : ' bg-transparent text-muted-foreground')}
         >Income</button>
         <button
-          onClick={() => setType(prev => 'Expense')}
+          onClick={() => {
+            setType(prev => 'Expense')
+            setFlds(prev => ({...prev, icon: '⬇️'}))
+          }}
           type="button"
           className={'rounded-s-[0] border w-1/2' + (type == 'Expense' ? '' : ' bg-transparent text-muted-foreground')}
         >Expense</button>

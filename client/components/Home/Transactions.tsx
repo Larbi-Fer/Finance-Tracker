@@ -11,6 +11,10 @@ import { EXPENSES_FOR_EACH_PAGE } from "@/lib/constantes"
 
 const columns: ColumnDef<ExpenseProps>[] = [
   {
+    accessorKey: 'icon',
+    header: '',
+  },
+  {
     accessorKey: "title",
     header: "Transaction title",
   },

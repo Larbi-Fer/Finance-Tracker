@@ -11,6 +11,10 @@ import { INCOMES_FOR_EACH_PAGE } from "@/lib/constantes"
 
 const columns: ColumnDef<IncomeProps>[] = [
   {
+    accessorKey: 'icon',
+    header: '',
+  },
+  {
     accessorKey: "title",
     header: "Title",
     cell: ({ row }) => {

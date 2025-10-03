@@ -47,6 +47,7 @@ export class IncomesService {
     date: Date;
     sourceId: string;
     walletId: string;
+    icon?: string
   }) {
     // Create the income record
     const income = await this.prisma.incomes.create({
@@ -56,6 +57,7 @@ export class IncomesService {
         date: data.date,
         sourceId: data.sourceId,
         walletId: data.walletId,
+        icon: data.icon
       },
     });
 

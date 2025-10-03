@@ -32,7 +32,6 @@ const Card = ({wallet, balance, background}: {wallet: WalletProps, balance?: num
 
   return (
     <div
-      key={wallet.id}
       className={`m-3 p-4 rounded-xl border shadow-sm bg-white dark:bg-gray-800
       border-gray-200 dark:border-gray-700 min-w-2xs min-h-[160px] flex flex-col justify-between
       transition-colors duration-300 hover:shadow-md hover:border-primary-500
@@ -41,7 +40,8 @@ const Card = ({wallet, balance, background}: {wallet: WalletProps, balance?: num
     >
       {/* Header */}
       <div className="mb-3">
-        <h2 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+        <h2 className="text-lg flex items-center gap-2 font-semibold text-gray-800 dark:text-gray-100">
+          <div>{wallet.icon}</div>
           {wallet.name}
         </h2>
         <p className="text-sm text-gray-600 dark:text-gray-300">

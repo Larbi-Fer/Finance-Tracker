@@ -11,11 +11,13 @@ export class ExpenseDto {
   date: Date;
   categoryId?: string;
   walletId?: string;
+  icon?: string
 }
 
 export class UpdateExpenseDto {
   title?: string;
   amount?: number;
+  icon?: string;
   date?: Date;
   categoryId?: string;
   walletId?: string;

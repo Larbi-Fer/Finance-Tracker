@@ -8,6 +8,7 @@ interface WalletMainProps {
   id: string
   name: string
   balance: number
+  icon?: string
   currnecy: {
     format: string
   }
@@ -19,6 +20,7 @@ interface WalletProps {
   currencyId: string
   incomeBalance: number
   expensesBalance: number
+  icon?: string
   currnecy: {
     name: string
     format: string
@@ -47,6 +49,7 @@ interface ExpenseProps {
   title: string,
   amount: number | string,
   date: string,
+  icon?: string
   category: {
     id: string,
     title: string
@@ -69,6 +72,7 @@ interface IncomeProps {
   title?: string,
   amount: number | string,
   date: string,
+  icon?: string
   source: {
     id: string,
     title: string

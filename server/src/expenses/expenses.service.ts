@@ -38,6 +38,7 @@ export class ExpensesService {
     date: Date;
     categoryId?: string;
     walletId?: string;
+    icon?: string;
   }) {
     // Create the expense record
     const expense = await this.prisma.expenses.create({
@@ -47,6 +48,7 @@ export class ExpensesService {
         date: data.date,
         categoryId: data.categoryId,
         walletId: data.walletId,
+        icon: data.icon
       },
     });
 

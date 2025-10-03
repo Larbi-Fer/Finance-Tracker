@@ -19,11 +19,8 @@ export class IncomesController {
   @Post('')
   createIncome(@Param('id') id: string, @Body() body: IncomeDto) {
     return this.incomesService.createIncome({
-      title: body.title,
-      amount: body.amount,
+      ...body,
       date: new Date(body.date),
-      sourceId: body.sourceId,
-      walletId: body.walletId,
     });
   }
   

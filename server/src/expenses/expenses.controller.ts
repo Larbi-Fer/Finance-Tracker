@@ -19,11 +19,8 @@ export class ExpensesController {
   @Post('')
   createExpense(@Param('id') id: string, @Body() body: ExpenseDto) {
     return this.expensesService.createExpense({
-      title: body.title,
-      amount: body.amount,
+      ...body,
       date: new Date(body.date),
-      categoryId: body.categoryId,
-      walletId: body.walletId,
     });
   }
   

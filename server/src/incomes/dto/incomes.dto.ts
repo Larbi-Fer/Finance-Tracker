@@ -11,6 +11,8 @@ export class IncomeDto {
   sourceId: string;
   @IsNotEmpty({message: 'Wallet is required'})
   walletId: string;
+
+  icon?: string;
 }
 
 export class UpdateIncomeDto {

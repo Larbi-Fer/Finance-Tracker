@@ -8,6 +8,9 @@ export class WalletDto {
   @IsNotEmpty({message: 'Currency is required'})
   @IsString({message: 'Invalid currency'})
   currencyId: string;
+
+  @IsString({message: 'Invalid currency'})
+  icon?: string;
 }
 
 export class UpdateWalletDto {
