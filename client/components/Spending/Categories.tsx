@@ -55,61 +55,11 @@ const Categories = ({categs}: {categs: CategoryProps[]}) => {
           </h3>
         </button>
       } title="Create a category">
-        <CreateCategory budget={categs[0].budget.map(b => ({...b, amount: 0}))} />
+        <CreateCategory budget={categs[0].budget.map(b => ({...b, amount: 0}))} exit={() => setOpen(false)} />
       </AlertOrDrower>
     </div>
 
   )
 }
-
-
-const CreateCategoryAlert = ({open, setOpen, trigger, budget}: {trigger: React.ReactNode, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>, budget: BudgetProps[]}) => {
-  const isDesktop = useMediaQuery("(min-width: 768px)")
-  budget = budget.map(b => ({...b, amount: 0}))
-  
-  if (isDesktop) {
-    return (
-      <Dialog open={open} onOpenChange={setOpen}>
-        <DialogTrigger asChild>
-          {trigger}
-        </DialogTrigger>
-        <DialogContent className="dark:bg-[#3335] dark:backdrop-blur-sm">
-          <DialogHeader>
-            <DialogTitle>Create a category</DialogTitle>
-            <DialogDescription>
-              
-            </DialogDescription>
-          </DialogHeader>
-          <CreateCategory budget={budget} />
-
-        </DialogContent>
-      </Dialog>
-    )
-  }
-
-  return (
-    <Drawer open={open} onOpenChange={setOpen}>
-      <DrawerTrigger asChild>
-        {trigger}
-      </DrawerTrigger>
-      <DrawerContent>
-        <DrawerHeader className="text-left">
-          <DrawerTitle>Create a category</DrawerTitle>
-          <DrawerDescription>
-            
-          </DrawerDescription>
-        </DrawerHeader>
-        <CreateCategory budget={budget} />
-
-        {/* <DrawerFooter className="pt-2">
-          <DrawerClose asChild>
-            <button>Cancel</button>
-          </DrawerClose>
-        </DrawerFooter> */}
-      </DrawerContent>
-    </Drawer>
-  )
-}
-
 
 export default Categories

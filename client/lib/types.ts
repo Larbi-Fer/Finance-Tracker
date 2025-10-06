@@ -107,6 +107,7 @@ interface BudgetProps {
 interface SourceProps {
   id: string
   title: string
+  icon: string,
   _count: {
     incomes: number
   }

@@ -9,7 +9,7 @@ import { useAppSelector } from "@/lib/hooks"
 
 const fields = {title: '', icon: '💳', budget: []}
 
-const CreateCategory = ({budget}: {budget: BudgetProps[]}) => {
+const CreateCategory = ({budget, exit}: {budget: BudgetProps[], exit: () => void}) => {
   const userId = useAppSelector(state => state.user?.id)!
   const {flds, handleChange, loading, handleSubmit, setFlds} = useForm({...fields, budget}, async(done, data) => {
     const res = await createCategory(userId, {...data, budget: data.budget.map(b => ({ currencyId: b.currencyId, amount: b.amount }))})
@@ -46,7 +46,7 @@ const CreateCategory = ({budget}: {budget: BudgetProps[]}) => {
       ))}
 
       <div className="flex justify-end gap-4 pt-2">
-        <button type="button">Cancel</button>
+        <button type="button" onClick={exit}>Cancel</button>
         <button type="submit">Create</button>
       </div>
 

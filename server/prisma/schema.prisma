@@ -46,7 +46,7 @@ model Currencies {
 }
 
 model Categories {
-  id     String @id @default(cuid())
+  id     String  @id @default(cuid())
   title  String
   icon   String?
   userId String
@@ -81,8 +81,9 @@ model Expenses {
 }
 
 model IncomeSources {
-  id         String @id @default(cuid())
+  id         String  @id @default(cuid())
   title      String
+  icon       String?
   userId     String
   currencyId String
 

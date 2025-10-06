@@ -1,6 +1,12 @@
+'use client'
 import Link from "next/link"
+import AlertOrDrower from "../Create/AlertOrDrower"
+import { useState } from "react"
+import CreateSource from "../Create/CreateSource"
 
 const Sources = ({data}: {data: SourceProps[]}) => {
+  const [open, setOpen] = useState(false)
+
   return (
     <div>
       <label className="text-2xl">Income sources</label>
@@ -14,7 +20,7 @@ const Sources = ({data}: {data: SourceProps[]}) => {
           >
             {/* Icon and Title */}
             <div className="flex items-center gap-3">
-              <i className="text-2xl text-neutral-600 dark:text-neutral-300">{/* icon */}</i>
+              <div className="text-2xl text-neutral-600 dark:text-neutral-300">{source.icon}</div>
               <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
                 {source.title}
               </h3>
@@ -27,6 +33,20 @@ const Sources = ({data}: {data: SourceProps[]}) => {
               </div>
           </Link>
         ))}
+
+        <AlertOrDrower open={open} setOpen={setOpen} trigger={
+        <button
+          className="bg-white dark:bg-neutral-800 shadow-sm rounded-lg p-4 flex flex-col gap-2 border border-neutral-200
+            dark:border-neutral-700 transition-colors hover:bg-amber-100 dark:hover:bg-neutral-700 cursor-pointer flex-center"
+        >
+            <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
+            <div className="text-center">+</div>
+            <div>Create new source</div>
+          </h3>
+        </button>
+      } title="Create a category">
+        <CreateSource exit={() => setOpen(false)} />
+      </AlertOrDrower>
       </div>
     </div>
   )
