@@ -11,4 +11,12 @@ export class AppService {
   getCurrencies() {
     return this.prisma.currencies.findMany()
   }
+
+  getUserCurrencies(userId: string) {
+    return this.prisma.currencies.findMany({
+      where: {
+        wallets: {some: {userId}}
+      }
+    })
+  }
 }

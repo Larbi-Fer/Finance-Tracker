@@ -48,6 +48,7 @@ model Currencies {
 model Categories {
   id     String @id @default(cuid())
   title  String
+  icon   String?
   userId String
 
   expenses Expenses[]

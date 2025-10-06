@@ -20,3 +20,18 @@ export const getCategories = async (id: string) : Promise<CategoriesActionProps>
     return { type: 'ERROR', payload: error.message}
   }
 }
+
+export const createCategory = async (id: string, categoryData: any): Promise<{
+  type: 'SUCCESS' | 'ERROR'
+  payload: CategoryProps
+}> => {
+  try {
+    const data = await api.post(id + path, categoryData)
+    if (data.error) {
+      throw new Error(data.message)
+    }
+    return { type: 'SUCCESS', payload: data }
+  } catch (error: any) {
+    return { type: 'ERROR', payload: error.message}
+  }
+}

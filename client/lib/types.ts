@@ -89,14 +89,18 @@ interface WalletDataProps extends WalletProps {
 interface CategoryProps {
   id: string
   title: string
+  icon: string
   _count: {
     expenses: number
   }
-  budget: {
-    amount: number
-    currency: { format: string }
-    spent: number
-  }[]
+  budget: BudgetProps[]
+}
+
+interface BudgetProps {
+  currencyId: string
+  amount: number
+  currency: { format: string }
+  spent: number
 }
 
 // income source

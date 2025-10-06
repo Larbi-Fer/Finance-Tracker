@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { AppService } from './app.service';
 
 @Controller()
@@ -13,5 +13,10 @@ export class AppController {
   @Get('/currencies')
   getCurrencies() {
     return this.appService.getCurrencies()
+  }
+
+  @Get('/currencies/:id')
+  getUserCurrencies(@Param('id') id: string) {
+    return this.appService.getUserCurrencies(id)
   }
 }

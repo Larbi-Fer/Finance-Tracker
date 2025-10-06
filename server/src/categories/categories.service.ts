@@ -17,6 +17,7 @@ export class CategoriesService {
         budget: {
           select: {
             amount: true,
+            currencyId: true,
             currency: { select: { format: true, id: true } }
           }
         }
@@ -80,6 +81,7 @@ export class CategoriesService {
         return {
           amount: existing?.amount || 0,
           currency: { format: currency.format },
+          currencyId: currency.id,
           spent
         };
       });
@@ -114,11 +116,21 @@ export class CategoriesService {
 
   createCategory(userId: string, data: {
     title: string;
-    amount: number;
+    icon?: string;
+    budget: {
+      currencyId: string;
+      amount: number
+    }[]
   }) {
     return this.prisma.categories.create({
       data: {
-        ...data,
+        title: data.title,
+        icon: data.icon,
+        budget: {
+          createMany: {
+            data: data.budget.filter(b => b.amount != 0)
+          }
+        },
         userId
       }
     });

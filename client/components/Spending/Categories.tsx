@@ -6,6 +6,8 @@ import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, Dr
 import { useMediaQuery } from "@/hooks/use-media-query"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
 import { Input } from "../ui/input"
+import CreateCategory from "../Create/CreateCategory"
+import AlertOrDrower from "../Create/AlertOrDrower"
 
 const Categories = ({categs}: {categs: CategoryProps[]}) => {
   const [open, setOpen] = React.useState(false)
@@ -21,7 +23,7 @@ const Categories = ({categs}: {categs: CategoryProps[]}) => {
         >
           {/* Icon and Title */}
           <div className="flex items-center gap-3">
-            <i className="text-2xl text-neutral-600 dark:text-neutral-300">{/* icon */}</i>
+            <div className="text-2xl text-neutral-600 dark:text-neutral-300">{categ.icon}</div>
             <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
               {categ.title}
             </h3>
@@ -42,7 +44,7 @@ const Categories = ({categs}: {categs: CategoryProps[]}) => {
         </Link>
       ))}
 
-      <CreateCategoryAlert open={open} setOpen={setOpen} trigger={
+      <AlertOrDrower open={open} setOpen={setOpen} trigger={
         <button
           className="bg-white dark:bg-neutral-800 shadow-sm rounded-lg p-4 flex flex-col gap-2 border border-neutral-200
             dark:border-neutral-700 transition-colors hover:bg-amber-100 dark:hover:bg-neutral-700 cursor-pointer flex-center"
@@ -52,32 +54,34 @@ const Categories = ({categs}: {categs: CategoryProps[]}) => {
             <div>Create new category</div>
           </h3>
         </button>
-      } />
+      } title="Create a category">
+        <CreateCategory budget={categs[0].budget.map(b => ({...b, amount: 0}))} />
+      </AlertOrDrower>
     </div>
 
   )
 }
 
 
-const CreateCategoryAlert = ({open, setOpen, trigger}: {trigger: React.ReactNode, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>}) => {
+const CreateCategoryAlert = ({open, setOpen, trigger, budget}: {trigger: React.ReactNode, open: boolean, setOpen: React.Dispatch<React.SetStateAction<boolean>>, budget: BudgetProps[]}) => {
   const isDesktop = useMediaQuery("(min-width: 768px)")
-
+  budget = budget.map(b => ({...b, amount: 0}))
+  
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger asChild>
           {trigger}
         </DialogTrigger>
-        <DialogContent className="sm:max-w-[425px] dark:bg-[#3335] dark:backdrop-blur-sm">
+        <DialogContent className="dark:bg-[#3335] dark:backdrop-blur-sm">
           <DialogHeader>
             <DialogTitle>Create a category</DialogTitle>
             <DialogDescription>
               
             </DialogDescription>
           </DialogHeader>
-          <form>
-            <Input placeholder="Test" autoFocus />
-          </form>
+          <CreateCategory budget={budget} />
+
         </DialogContent>
       </Dialog>
     )
@@ -95,14 +99,13 @@ const CreateCategoryAlert = ({open, setOpen, trigger}: {trigger: React.ReactNode
             
           </DrawerDescription>
         </DrawerHeader>
-        <form>
-          Creation form
-        </form>
-        <DrawerFooter className="pt-2">
+        <CreateCategory budget={budget} />
+
+        {/* <DrawerFooter className="pt-2">
           <DrawerClose asChild>
             <button>Cancel</button>
           </DrawerClose>
-        </DrawerFooter>
+        </DrawerFooter> */}
       </DrawerContent>
     </Drawer>
   )
