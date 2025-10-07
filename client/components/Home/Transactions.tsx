@@ -3,11 +3,14 @@ import { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "../ui/DataTable"
 import { differenceInDays, formatDate, formatDistanceToNow } from "date-fns"
 import { useRouter } from "next/navigation"
-import { useState } from "react"
-import { getExpenses } from "@/actions/expenses.actions"
+import { useEffect, useRef, useState } from "react"
+import { getExpenses, removeExpense } from "@/actions/expenses.actions"
 import { useSelector } from "react-redux"
 import { RootState } from "@/lib/store"
 import { EXPENSES_FOR_EACH_PAGE } from "@/lib/constantes"
+import { Trash2Icon } from "lucide-react"
+import ConfirmDialog from "../ui/ConfirmDialog"
+import { useAppSelector } from "@/lib/hooks"
 
 const columns: ColumnDef<ExpenseProps>[] = [
   {
@@ -52,6 +55,31 @@ const columns: ColumnDef<ExpenseProps>[] = [
     header: "Amount",
     cell: ({row}) => <b>{row.getValue('amount')}</b>
   },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const userId = useAppSelector(state => state.user?.id)!
+      const router = useRouter()
+      const expense = row.original
+      
+      return (
+        <ConfirmDialog
+          description="Once confirmed, this action cannot be undone. The payment will be permanently removed from our servers"
+          onConfirm={async() => {
+            console.log('delete', expense.id);
+            const res = await removeExpense(userId, expense.id)
+            console.log(res);
+            router.refresh()
+            
+          }}
+          continueText="Delete"
+        >
+          <div className="cursor-pointer text-red-700"><Trash2Icon size={20} /></div>
+        </ConfirmDialog>
+      )
+    },
+  },
 ]
 
 const Transactions = ({expenses, loadMoreExpenses}: {expenses: ExpenseProps[], loadMoreExpenses?: boolean}) => {
@@ -60,6 +88,18 @@ const Transactions = ({expenses, loadMoreExpenses}: {expenses: ExpenseProps[], l
   const [data, setData] = useState(expenses)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
+  const firstRender = useRef(true)
+
+  useEffect(() => {
+    if (firstRender.current) {
+      firstRender.current = false
+      return
+    }
+    console.log('regenerate expenses');
+    
+    setData(expenses)
+  }, [expenses])
+  
 
   if (!loadMoreExpenses) return <DataTable columns={columns} data={data} onRowClick={row => {
       const data: any = row.original
@@ -81,10 +121,7 @@ const Transactions = ({expenses, loadMoreExpenses}: {expenses: ExpenseProps[], l
   }
 
   return (
-    <DataTable columns={columns} data={data} onRowClick={row => {
-      const data: any = row.original
-      router.push('/expenses/' + data.id)
-    }} onLoadMore={loadMore} loading={loading} />
+    <DataTable columns={columns} data={data} onLoadMore={loadMore} loading={loading} />
   )
 }
 

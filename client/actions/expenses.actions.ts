@@ -33,3 +33,15 @@ export const createExpense = async (userId: string, expenseData: any) : Promise<
     return { type: 'ERROR', payload: error.message}
   }
 }
+
+export const removeExpense = async (userId: string, expenseId: any) : Promise<expensesActionProps> => {
+  try {
+    const data = await api.delete(`${userId}${path}${expenseId}`)
+    if (data.error) {
+      throw new Error(data.message)
+    }
+    return { type: 'SUCCESS', payload: data as ExpenseProps }
+  } catch (error: any) {
+    return { type: 'ERROR', payload: error.message}
+  }
+}
