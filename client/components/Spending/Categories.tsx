@@ -2,10 +2,6 @@
 import Link from "next/link"
 import { Progress } from "../ui/progress"
 import React from "react"
-import { Drawer, DrawerClose, DrawerContent, DrawerDescription, DrawerFooter, DrawerHeader, DrawerTitle, DrawerTrigger } from "../ui/drawer"
-import { useMediaQuery } from "@/hooks/use-media-query"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "../ui/dialog"
-import { Input } from "../ui/input"
 import CreateCategory from "../Create/CreateCategory"
 import AlertOrDrower from "../Create/AlertOrDrower"
 
@@ -18,7 +14,7 @@ const Categories = ({categs}: {categs: CategoryProps[]}) => {
         <Link
           key={categ.id}
           className="bg-white dark:bg-neutral-800 shadow-sm rounded-lg p-4 flex flex-col gap-2 border border-neutral-200
-                    dark:border-neutral-700 transition-colors hover:bg-amber-100 dark:hover:bg-neutral-700"
+                    dark:border-neutral-700 transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-700"
           href={'/category/' + categ.id}
         >
           {/* Icon and Title */}
@@ -47,7 +43,7 @@ const Categories = ({categs}: {categs: CategoryProps[]}) => {
       <AlertOrDrower open={open} setOpen={setOpen} trigger={
         <button
           className="bg-white dark:bg-neutral-800 shadow-sm rounded-lg p-4 flex flex-col gap-2 border border-neutral-200
-            dark:border-neutral-700 transition-colors hover:bg-amber-100 dark:hover:bg-neutral-700 cursor-pointer flex-center"
+            dark:border-neutral-700 transition-colors hover:bg-neutral-100 dark:hover:bg-neutral-700 cursor-pointer flex-center"
         >
             <h3 className="text-lg font-semibold text-neutral-800 dark:text-neutral-100">
             <div className="text-center">+</div>
