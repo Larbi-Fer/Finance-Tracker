@@ -107,7 +107,7 @@ const Transactions = ({expenses, loadMoreExpenses}: {expenses: ExpenseProps[], l
   
 
   if (!loadMoreExpenses) return <DataTable columns={columns} data={data} onRowClick={row => {
-      const data: any = row.original
+      const data = row.original
       router.push('/expenses/' + data.id)
     }} />
 
@@ -129,7 +129,7 @@ const Transactions = ({expenses, loadMoreExpenses}: {expenses: ExpenseProps[], l
     <>
       <DataTable columns={columns} data={data} onLoadMore={loadMore} loading={loading}
         onRowClick={row => {
-          const data: any = row.original
+          const data: any = {...row.original}
           delete data.category
           delete data.wallet
           setEditable({...data, amount: parseInt(data.amount.replace(/\D/g, ''))})
