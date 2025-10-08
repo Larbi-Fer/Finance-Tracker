@@ -11,6 +11,10 @@ import { EXPENSES_FOR_EACH_PAGE } from "@/lib/constantes"
 import { Trash2Icon } from "lucide-react"
 import ConfirmDialog from "../ui/ConfirmDialog"
 import { useAppSelector } from "@/lib/hooks"
+import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle } from "../ui/sheet"
+import { Button } from "../ui/button"
+import CreateTransaction from "../Create/CreateTransaction"
+import UpdateTransaction from "../Update/UpdateTransaction"
 
 const columns: ColumnDef<ExpenseProps>[] = [
   {
@@ -86,6 +90,7 @@ const Transactions = ({expenses, loadMoreExpenses}: {expenses: ExpenseProps[], l
   const id = useSelector((state: RootState) => state.user?.id)!
   const [page, setPage] = useState(1)
   const [data, setData] = useState(expenses)
+  const [editable, setEditable] = useState<ExpenseProps>()
   const [loading, setLoading] = useState(false)
   const router = useRouter()
   const firstRender = useRef(true)
@@ -121,9 +126,30 @@ const Transactions = ({expenses, loadMoreExpenses}: {expenses: ExpenseProps[], l
   }
 
   return (
-    <DataTable columns={columns} data={data} onLoadMore={loadMore} loading={loading} onRowClick={row => {
-      console.log('Clicked!')
-    }} />
+    <>
+      <DataTable columns={columns} data={data} onLoadMore={loadMore} loading={loading}
+        onRowClick={row => {
+          const data: any = row.original
+          delete data.category
+          delete data.wallet
+          setEditable({...data, amount: parseInt(data.amount.replace(/\D/g, ''))})
+        }}
+      />
+      <Sheet open={!!editable} onOpenChange={o => setEditable(undefined)}>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Edit profile</SheetTitle>
+            <SheetDescription>
+              Make changes to your profile here. Click save when you&apos;re done.
+            </SheetDescription>
+          </SheetHeader>
+          <UpdateTransaction fields={editable!} collapse={() => {
+            setEditable(undefined)
+            router.refresh()
+          }} />
+        </SheetContent>
+      </Sheet>
+    </>
   )
 }
 

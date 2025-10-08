@@ -45,3 +45,17 @@ export const removeExpense = async (userId: string, expenseId: any) : Promise<ex
     return { type: 'ERROR', payload: error.message}
   }
 }
+
+export const updateExpense = async (userId: string, expenseData: any) : Promise<expensesActionProps> => {
+  try {
+    const id = expenseData.id
+    delete expenseData.id
+    const data = await api.patch(`${userId}${path}${id}`, expenseData)
+    if (data.error) {
+      throw new Error(data.message)
+    }
+    return { type: 'SUCCESS', payload: data as ExpenseProps }
+  } catch (error: any) {
+    return { type: 'ERROR', payload: error.message}
+  }
+}
