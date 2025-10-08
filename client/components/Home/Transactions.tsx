@@ -73,7 +73,6 @@ const columns: ColumnDef<ExpenseProps>[] = [
           onConfirm={async() => {
             console.log('delete', expense.id);
             const res = await removeExpense(userId, expense.id)
-            console.log(res);
             router.refresh()
             
           }}

@@ -47,3 +47,15 @@ export const updateIncome = async (userId: string, incomeData: any) : Promise<In
     return { type: 'ERROR', payload: error.message}
   }
 }
+
+export const removeIncome = async (userId: string, incomeId: string) : Promise<IncomesActionProps> => {
+  try {
+    const data = await api.delete(`${userId}${path}${incomeId}`)
+    if (data.error) {
+      throw new Error(data.message)
+    }
+    return { type: 'SUCCESS', payload: data as IncomeProps }
+  } catch (error: any) {
+    return { type: 'ERROR', payload: error.message}
+  }
+}

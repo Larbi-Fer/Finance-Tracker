@@ -6,11 +6,14 @@ import { useRouter } from "next/navigation"
 import { useSelector } from "react-redux"
 import { useEffect, useRef, useState } from "react"
 import { RootState } from "@/lib/store"
-import { getIncomes } from "@/actions/incomes.actions"
+import { getIncomes, removeIncome } from "@/actions/incomes.actions"
 import { INCOMES_FOR_EACH_PAGE } from "@/lib/constantes"
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from "../ui/sheet"
 import UpdateTransaction from "../Update/UpdateTransaction"
 import UpdateIncome from "../Update/UpdateIncome"
+import ConfirmDialog from "../ui/ConfirmDialog"
+import { Trash2Icon } from "lucide-react"
+import { useAppSelector } from "@/lib/hooks"
 
 const columns: ColumnDef<IncomeProps>[] = [
   {
@@ -46,6 +49,29 @@ const columns: ColumnDef<IncomeProps>[] = [
     enableColumnFilter: true,
     cell: ({ row }) => <b>{row.getValue('amount')}</b>
   },
+  {
+    id: "actions",
+    enableHiding: false,
+    cell: ({ row }) => {
+      const userId = useAppSelector(state => state.user?.id)!
+      const router = useRouter()
+      const income = row.original
+
+      return (
+        <ConfirmDialog
+          description="Once confirmed, this action cannot be undone. The payment will be permanently removed from our servers"
+          onConfirm={async() => {
+            console.log('delete', income.id);
+            const res = await removeIncome(userId, income.id)
+            router.refresh()
+          }}
+          continueText="Delete"
+        >
+          <div className="cursor-pointer text-red-700"><Trash2Icon size={20} /></div>
+        </ConfirmDialog>
+      )
+    },
+  }
 ]
 
 const IncomesTable = ({ data: incomes, loadMoreIncomes }: { data: IncomeProps[], loadMoreIncomes?: boolean }) => {
