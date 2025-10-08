@@ -63,11 +63,13 @@ export function DataTable<TData, TValue>({
                 <TableRow
                   key={row.id}
                   data-state={row.getIsSelected() && "selected"}
-                  className={onRowClick ? "cursor-pointer" : ''}
-                  onClick={onRowClick && (() => onRowClick(row))}
                 >
                   {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
+                    <TableCell
+                      key={cell.id}
+                      onClick={(onRowClick && !cell.id.endsWith('actions')) ? (() => onRowClick(row)) : undefined}
+                      className={(onRowClick && !cell.id.endsWith('actions')) ? "cursor-pointer" : ''}
+                    >
                       {flexRender(cell.column.columnDef.cell, cell.getContext())}
                     </TableCell>
                   ))}

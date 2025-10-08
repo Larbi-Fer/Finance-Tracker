@@ -121,7 +121,9 @@ const Transactions = ({expenses, loadMoreExpenses}: {expenses: ExpenseProps[], l
   }
 
   return (
-    <DataTable columns={columns} data={data} onLoadMore={loadMore} loading={loading} />
+    <DataTable columns={columns} data={data} onLoadMore={loadMore} loading={loading} onRowClick={row => {
+      console.log('Clicked!')
+    }} />
   )
 }
 
