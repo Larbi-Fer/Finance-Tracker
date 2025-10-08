@@ -15,7 +15,7 @@ const ConfirmDialog = ({ children, description, title, onConfirm, continueText}:
       <AlertDialogTrigger asChild>
         {children}
       </AlertDialogTrigger>
-      <AlertDialogContent>
+      <AlertDialogContent className="dark:bg-[#3336] dark:backdrop-blur-sm">
         <AlertDialogHeader>
           <AlertDialogTitle>{title || 'Are you absolutely sure?'}</AlertDialogTitle>
           <AlertDialogDescription>
