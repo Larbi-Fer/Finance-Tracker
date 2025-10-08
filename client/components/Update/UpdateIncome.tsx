@@ -1,41 +1,40 @@
 'use client'
-
 import { useForm } from "@/lib/customHooks"
-import { Input } from "../ui/input"
-import {format} from 'date-fns'
-import Dropdown, { DropdownListProps } from "../ui/Dropdown"
+import Dropdown from "../ui/Dropdown"
 import IconPicker from "../ui/IconPicker"
 import { useEffect, useState } from "react"
+import { getSources } from "@/actions/sources.actions"
 import { useAppSelector } from "@/lib/hooks"
 import { getWallets } from "@/actions/wallets.actions"
-import { getCategories } from "@/actions/categories.actions"
 import { Spinner } from "../ui/spinner"
+import { Input } from "../ui/input"
 import { SheetClose, SheetFooter } from "../ui/sheet"
 import { Button } from "../ui/button"
-import { updateExpense } from "@/actions/expenses.actions"
+import { updateIncome } from "@/actions/incomes.actions"
+import { format } from "date-fns"
 
-type UpdateTransactionProps = {
-  fields: ExpenseProps
+type UpdateIncomeProps = {
+  fields: IncomeProps
   collapse: () => void
 }
 
-const UpdateTransaction = ({fields, collapse}: UpdateTransactionProps) => {
+const UpdateIncome = ({fields, collapse}: UpdateIncomeProps) => {
   const userId = useAppSelector(state => state.user?.id)!
-  const [categories, setCategories] = useState<DropdownListProps>([])
-  const [wallets, setWallets] = useState<WalletMainProps[]>([])
-
   const {flds, handleChange, loading, handleSubmit, setFlds} = useForm(fields, async(done, data) => {
-    const result = await updateExpense(userId, {...data, amount: parseInt(data.amount as string)})
-
+    const result = await updateIncome(userId, {...data, amount: parseInt(data.amount as string)})
+    
     if (result.type == 'ERROR') console.error(result);
     collapse()
     done()
   })
+  const [sources, setSources] = useState<SourceProps[]>([])
+  const [wallets, setWallets] = useState<WalletMainProps[]>([])
 
   useEffect(() => {
     (async() => {
-      const categs = await getCategories(userId)
-      setCategories(categs.payload.map(c => ({id: c.id, title: c.title})))
+      const sources = await getSources(userId)
+      
+      setSources(sources.payload)
     })();
 
     (async() => {
@@ -43,35 +42,37 @@ const UpdateTransaction = ({fields, collapse}: UpdateTransactionProps) => {
       setWallets(wallets.payload)
     })();
   }, [])
-  
 
   return (
     <form onSubmit={handleSubmit} className="h-[100%] flex flex-col">
-
       <div className="mx-4">
         <div className="flex gap-1">
-          <IconPicker onEmojiClick={props => {
-              setFlds(prev => ({...prev, icon: props.emoji}))
-            }}
-            className="w-[60px]"
-            icon={flds.icon!}
-          />
-          <Input className="w-full" type="text" placeholder="Title" name="title" onChange={handleChange} value={flds.title} />
-        </div>
+        <IconPicker onEmojiClick={props => {
+            setFlds(prev => ({...prev, icon: props.emoji}))
+          }}
+          className="w-[60px]"
+          icon={flds.icon!}
+        />
+        {sources.length ?
+        <Dropdown
+          placeholder="Choose a source"
+          list={sources}
+          suffix={(item: SourceProps) => item.currency.format.replace('{}', '')}
+          val={flds.sourceId}
+          handleChange={val => setFlds(prev => ({...prev, sourceId: val, walletId: ''}))}
+          /> : <div className="flex-center py-2"><Spinner className="size-6" /></div>}
+      </div>
 
-        {wallets.length ? <Dropdown
-        placeholder="Choose a wallet"
-          list={wallets.map(w => ({...w, title: w.name}))}
+      {sources.find(s => s.id == flds.sourceId)?.title == 'Other' &&
+        <Input className="w-full" type="text" placeholder="Title" name="title" onChange={handleChange} value={flds.title} />
+      }
+      {wallets.length ?
+        <Dropdown
+          placeholder="Choose a wallet"
+          list={wallets.filter(w => w.currnecy.format == sources.find(s => s.id == flds.sourceId)?.currency.format)?.map(w => ({...w, title: w.name}))}
           suffix={wallet => wallet.currnecy.format.replace('{}', wallet.balance)}
-          val={flds.walletId!}
+          val={flds.walletId}
           handleChange={val => setFlds(prev => ({...prev, walletId: val}))}
-        /> : <div className="flex-center py-2"><Spinner className="size-6" /></div>}
-
-        {categories.length ? <Dropdown
-          placeholder="Choose a category"
-          list={categories}
-          val={flds.categoryId!}
-          handleChange={val => setFlds(prev => ({...prev, categoryId: val}))}
         /> : <div className="flex-center py-2"><Spinner className="size-6" /></div>}
 
         <div className="flex">
@@ -91,4 +92,4 @@ const UpdateTransaction = ({fields, collapse}: UpdateTransactionProps) => {
   )
 }
 
-export default UpdateTransaction
+export default UpdateIncome

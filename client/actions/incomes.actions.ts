@@ -33,3 +33,17 @@ export const createIncome = async (userId: string, incomeData: any) : Promise<In
     return { type: 'ERROR', payload: error.message}
   }
 }
+
+export const updateIncome = async (userId: string, incomeData: any) : Promise<IncomesActionProps> => {
+  try {
+    const id = incomeData.id
+    delete incomeData.id
+    const data = await api.patch(`${userId}${path}${id}`, incomeData)
+    if (data.error) {
+      throw new Error(data.message)
+    }
+    return { type: 'SUCCESS', payload: data as IncomeProps }
+  } catch (error: any) {
+    return { type: 'ERROR', payload: error.message}
+  }
+}

@@ -77,7 +77,9 @@ interface IncomeProps {
     id: string,
     title: string
   }
+  sourceId: string;
   wallet?: WalletInsideExpenseProps | string
+  walletId: string;
 }
 
 interface WalletDataProps extends WalletProps {

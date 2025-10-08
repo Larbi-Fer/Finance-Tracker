@@ -100,8 +100,7 @@ const Transactions = ({expenses, loadMoreExpenses}: {expenses: ExpenseProps[], l
       firstRender.current = false
       return
     }
-    console.log('regenerate expenses');
-    
+
     setData(expenses)
   }, [expenses])
   
