@@ -98,10 +98,19 @@ export class CategoriesService {
     const category = await this.prisma.categories.findUnique({
       where: { id },
       include: {
-        expenses: true,
+        expenses: {
+          include: {
+            wallet: {
+              select: {
+                name: true,
+                currnecy: true
+              }
+            }
+          }
+        },
         _count: {
           select: { expenses: true }
-        }
+        },
       }
     });
 

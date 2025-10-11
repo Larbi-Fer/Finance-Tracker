@@ -15,6 +15,7 @@ import { Sheet, SheetClose, SheetContent, SheetDescription, SheetFooter, SheetHe
 import { Button } from "../ui/button"
 import CreateTransaction from "../Create/CreateTransaction"
 import UpdateTransaction from "../Update/UpdateTransaction"
+import { isStringInteger } from "@/lib/utils"
 
 const columns: ColumnDef<ExpenseProps>[] = [
   {
@@ -57,7 +58,16 @@ const columns: ColumnDef<ExpenseProps>[] = [
   {
     accessorKey: "amount",
     header: "Amount",
-    cell: ({row}) => <b>{row.getValue('amount')}</b>
+    cell: ({row}) => {
+      const amount: string = row.getValue('amount')
+      
+      if (isStringInteger(amount)) {
+        const format = (row.original.wallet as WalletInsideExpenseProps).currnecy?.format
+        console.log(format, row.original.wallet);
+        return <b>{format?.replace('{}', amount)}</b>
+      } else return <b>{amount}</b>
+      
+    }
   },
   {
     id: "actions",
@@ -104,10 +114,7 @@ const Transactions = ({expenses, loadMoreExpenses}: {expenses: ExpenseProps[], l
   }, [expenses])
   
 
-  if (!loadMoreExpenses) return <DataTable columns={columns} data={data} onRowClick={row => {
-      const data = row.original
-      router.push('/expenses/' + data.id)
-    }} />
+  if (!loadMoreExpenses) return <DataTable columns={columns} data={data} />
 
   const loadMore = async () => {
     setLoading(true)

@@ -43,7 +43,6 @@ const HomePage = async() => {
           <IncomesTable data={incomes} />
         </div>
       </div>
-      Home
     </div>
   )
 }

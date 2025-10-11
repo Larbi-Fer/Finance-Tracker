@@ -92,15 +92,7 @@ const IncomesTable = ({ data: incomes, loadMoreIncomes }: { data: IncomeProps[],
     setData(incomes)
   }, [incomes])
 
-  if (!loadMoreIncomes) return <DataTable columns={columns} data={incomes} onRowClick={row => {
-    const data: any = row.original
-    router.push('/incomes/' + data.id)
-  }} />
-
-  if (!loadMoreIncomes) return <DataTable columns={columns} data={incomes} onRowClick={row => {
-    const data: any = row.original
-    router.push('/expenses/' + data.id)
-  }} />
+  if (!loadMoreIncomes) return <DataTable columns={columns} data={incomes} />
 
   const loadMore = async () => {
     setLoading(true)
