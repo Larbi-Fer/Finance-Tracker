@@ -35,3 +35,18 @@ export const createCategory = async (id: string, categoryData: any): Promise<{
     return { type: 'ERROR', payload: error.message}
   }
 }
+
+export const getCategoriyDetails = async (userId: string, id: string) : Promise<{
+  type: 'SUCCESS' | 'ERROR'
+  payload: CategoryDetails
+}> => {
+  try {
+    const data = await api.get(userId + path + id)
+    if (data.error) {
+      throw new Error(data.message)
+    }
+    return { type: 'SUCCESS', payload: data }
+  } catch (error: any) {
+    return { type: 'ERROR', payload: error.message}
+  }
+}

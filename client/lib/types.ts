@@ -98,6 +98,13 @@ interface CategoryProps {
   budget: BudgetProps[]
 }
 
+interface CategoryDetails {
+  expenses: ExpenseProps[]
+  id: string
+  title: string
+  icon: string
+}
+
 interface BudgetProps {
   currencyId: string
   amount: number
