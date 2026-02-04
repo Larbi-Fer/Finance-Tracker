@@ -103,6 +103,10 @@ interface CategoryDetails {
   id: string
   title: string
   icon: string
+  monthly: {
+    month: number
+    total: number
+  }[]
 }
 
 interface BudgetProps {

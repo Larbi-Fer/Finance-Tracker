@@ -120,7 +120,48 @@ export class CategoriesService {
     if (category.userId !== userId)
       throw new UnauthorizedException();
 
-    return category;
+    const monthly = await this.getMonthlyCategoryExpenses(id, userId, 2026);
+
+    return { ...category, monthly };
+  }
+
+  async getMonthlyCategoryExpenses(
+    categoryId: string,
+    userId: string,
+    year: number,
+  ) {
+    const start = new Date(`${year}-01-01T00:00:00.000Z`);
+    const end = new Date(`${year}-12-31T23:59:59.999Z`);
+
+    const expenses = await this.prisma.expenses.findMany({
+      where: {
+        categoryId,
+        category: {
+          userId,
+        },
+        date: {
+          gte: start,
+          lte: end,
+        },
+      },
+      select: {
+        amount: true,
+        date: true,
+      },
+    });
+
+    // Group in JS by month
+    const monthlyTotals = Array.from({ length: 12 }, (_, i) => ({
+      month: i + 1,
+      total: 0,
+    }));
+
+    for (const expense of expenses) {
+      const month = expense.date.getUTCMonth(); // 0–11
+      monthlyTotals[month].total += expense.amount;
+    }
+
+    return monthlyTotals;
   }
 
   createCategory(userId: string, data: {
